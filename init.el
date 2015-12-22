@@ -1,4 +1,4 @@
-(add-to-list 'load-path "~/.emacs.d/")
+(add-to-list 'load-path "~/.emacs.d/lisp")
 (load "flymake-cursor.el")
 
 (require 'package)
@@ -8,6 +8,7 @@
       package-archives)
 (package-initialize)
 
+(setq evil-toggle-key "C-\\")
 (require 'evil)
 (evil-mode 1)
 
