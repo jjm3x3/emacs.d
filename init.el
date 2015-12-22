@@ -1,12 +1,24 @@
 (add-to-list 'load-path "~/.emacs.d/lisp")
 (load "flymake-cursor.el")
 
+; list the packages you want
+(setq package-list '(evil))
+
 (require 'package)
 (push '("marmalade" . "http://marmalade-repo.org/packages/")
       package-archives)
 (push '("melpa" . "http://melpa.mailbox.net/packages/")
       package-archives)
 (package-initialize)
+
+;fetch a list of packages availible
+(unless package-archive-contents
+    (package-refresh-contents))
+
+; install the missing packages
+(dolist (package package-list)
+    (unless (package-installed-p package)
+          (package-install package)))
 
 (setq evil-toggle-key "C-\\")
 (require 'evil)
