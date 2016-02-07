@@ -2,7 +2,7 @@
 (load "flymake-cursor.el")
 
 ; list the packages you want
-(setq package-list '(evil))
+(setq package-list '(evil elscreen))
 
 (require 'package)
 (push '("marmalade" . "http://marmalade-repo.org/packages/")
@@ -78,3 +78,11 @@
                  ; (define-key keymap-from key nil))
 ; (my-move-key evil-motion-state-map evil-normal-state-map (kbd "RET"))
 ; (my-move-key evil-motion-state-map evil-insert-state-map " ")
+
+(load "elscreen" "ElScreen" t)
+(elscreen-start)
+(define-key evil-normal-state-map (kbd "C-w t") 'elscreen-create) ;creat tab
+(define-key evil-normal-state-map (kbd "C-w x") 'elscreen-kill) ;kill tab
+
+(define-key evil-normal-state-map "gT" 'elscreen-previous) ;previous tab
+(define-key evil-normal-state-map "gt" 'elscreen-next) ;next tab
