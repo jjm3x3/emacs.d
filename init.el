@@ -2,7 +2,7 @@
 (load "flymake-cursor.el")
 
 ; list the packages you want
-(setq package-list '(evil elscreen))
+(setq package-list '(evil neotree elscreen))
 
 (require 'package)
 (push '("marmalade" . "http://marmalade-repo.org/packages/")
