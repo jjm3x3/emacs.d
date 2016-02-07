@@ -62,10 +62,19 @@
         (local-set-key (kbd "M-.") 'godef-jump))
 (add-hook 'go-mode-hook 'my-go-mode-hook)
 
-;Have no idea why this doesnt work
+; (setq evil-overiding-maps nil)
+; (setq evil-intercept-maps nil)
+
 (add-hook 'neotree-mode-hook
-          ;(Lambda ()
-                  ;(define-key evil-normal-state-local-map (kbd "TAB") 'neotree-enter))
-                  ;(define-key evil-normal-state-local-map (kbd "SPC") 'neotree-enter)
-                  ;(define-key evil-normal-state-local-map (kbd "q") 'neotree-hide)
-                  (define-key evil-normal-state-local-map (kbd "RET") 'neotree-enter))
+         (lambda ()
+                 (define-key evil-normal-state-local-map (kbd "TAB") 'neotree-enter)
+                 (define-key evil-normal-state-local-map (kbd "SPC") 'neotree-enter)
+                 (define-key evil-normal-state-local-map (kbd "q") 'neotree-hide)
+                 (define-key evil-normal-state-local-map (kbd "RET") 'neotree-enter)))
+
+; (defun my-move-key (keymap-from keymap-to key)
+       ; "Moves key binding from one keymap to another, deleting from the old location. "
+            ; (define-key keymap-to key (lookup-key keymap-from key))
+                 ; (define-key keymap-from key nil))
+; (my-move-key evil-motion-state-map evil-normal-state-map (kbd "RET"))
+; (my-move-key evil-motion-state-map evil-insert-state-map " ")
