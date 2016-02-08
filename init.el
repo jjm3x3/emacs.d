@@ -28,6 +28,8 @@
 (require 'ido)
 (ido-mode t)
 
+(show-paren-mode 1)
+
 (global-linum-mode 1)
 (setq linum-format "%3d ")
 (setq-default indent-tabs-mode nil)
@@ -93,3 +95,17 @@
 
 ;; as a result of useing elscreen I need to remap C-z C-z to be susspend
 (define-key evil-normal-state-map (kbd "C-z C-z") 'suspend-emacs)
+
+
+(defun runGo ()
+  (interactive)
+  (shell-command "go build &> build.out")
+  (split-window-right)
+  (if (get-buffer "build.out")
+        (revert-buffer "build.out" t t) 
+        (find-file-other-window "build.out" t))
+)
+
+;; (evil-ex "w")
+;; (evil-ex-call-command "" "w" "")
+;; (with-no-warnings)
