@@ -23,6 +23,7 @@
 (setq evil-toggle-key "C-\\")
 (require 'evil)
 (evil-mode 1)
+(setq evil-sec-delay 0)
 
 (require 'ido)
 (ido-mode t)
@@ -62,15 +63,18 @@
         (local-set-key (kbd "M-.") 'godef-jump))
 (add-hook 'go-mode-hook 'my-go-mode-hook)
 
-; (setq evil-overiding-maps nil)
-; (setq evil-intercept-maps nil)
+(setq evil-overiding-maps nil)
+(setq evil-intercept-maps nil)
 
+(define-key evil-normal-state-map (kbd "]e") 'neotree-toggle)
+(define-key evil-motion-state-map (kbd "]e") 'neotree-toggle)
 (add-hook 'neotree-mode-hook
          (lambda ()
-                 (define-key evil-normal-state-local-map (kbd "TAB") 'neotree-enter)
-                 (define-key evil-normal-state-local-map (kbd "SPC") 'neotree-enter)
-                 (define-key evil-normal-state-local-map (kbd "q") 'neotree-hide)
-                 (define-key evil-normal-state-local-map (kbd "RET") 'neotree-enter)))
+           (define-key evil-normal-state-local-map (kbd "TAB") 'neotree-enter)
+           (define-key evil-normal-state-local-map (kbd "SPC") 'neotree-enter)
+           (define-key evil-normal-state-local-map (kbd "q") 'neotree-hide)
+           (define-key evil-normal-state-local-map "I" 'neotree-hidden-file-toggle)
+           (define-key evil-normal-state-local-map (kbd "RET") 'neotree-enter)))
 
 ; (defun my-move-key (keymap-from keymap-to key)
        ; "Moves key binding from one keymap to another, deleting from the old location. "
@@ -86,3 +90,6 @@
 
 (define-key evil-normal-state-map "gT" 'elscreen-previous) ;previous tab
 (define-key evil-normal-state-map "gt" 'elscreen-next) ;next tab
+
+;; as a result of useing elscreen I need to remap C-z C-z to be susspend
+(define-key evil-normal-state-map (kbd "C-z C-z") 'suspend-emacs)
