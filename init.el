@@ -68,6 +68,8 @@
 (setq evil-overiding-maps nil)
 (setq evil-intercept-maps nil)
 
+(require 'neotree)
+
 (define-key evil-normal-state-map (kbd "]e") 'neotree-toggle)
 (define-key evil-motion-state-map (kbd "]e") 'neotree-toggle)
 (add-hook 'neotree-mode-hook
@@ -97,14 +99,26 @@
 (define-key evil-normal-state-map (kbd "C-z C-z") 'suspend-emacs)
 
 
-(defun runGo ()
+(defun goBuild ()
   (interactive)
   (shell-command "go build &> build.out")
-  (split-window-right)
+  (gurentee-two-windows)
   (if (get-buffer "build.out")
-        (revert-buffer "build.out" t t) 
-        (find-file-other-window "build.out" t))
-)
+      (progn (print "does it happen in here?")
+             (open-build-on-other))
+    (progn (print "or in here?")
+           (find-file-other-window "build.out" t)))
+  (other-window -1))
+
+(defun gurentee-two-windows ()
+ (if (eq (length (window-list)) 1)     
+      (split-window-right)))
+
+(defun open-build-on-other ()
+  (other-window 1)
+  (revert-buffer "build.out" t t) 
+  (if (not (eq (window-buffer) (get-buffer "build.out"))) 
+      (set-window-buffer nil "build.out")))
 
 ;; (evil-ex "w")
 ;; (evil-ex-call-command "" "w" "")
