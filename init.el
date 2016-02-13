@@ -103,7 +103,13 @@
   (interactive)
   (shell-command "go build" "compile")
   (gurentee-two-windows)
-  (open-on-other "compile"))
+  (open-on-other (window-buffer) "compile"))
+
+(defun goRun ()
+  (interactive)
+  (gurentee-two-windows)
+  (shell-command "./goBoyAdvance" "run")
+  (open-on-other (window-buffer) "run"))
 
 (define-key evil-normal-state-map (kbd "]c") 'goBuild)
 (define-key evil-motion-state-map (kbd "]c") 'goBuild)
@@ -116,9 +122,11 @@
   (if (not (eq (window-buffer) (get-buffer fileName))) 
      (set-window-buffer nil fileName)))
  
-(defun open-on-other (bufferName)
+(defun open-on-other (start bufferName)
   (run-on-other 1 '(lambda () 
-  (if (not (eq (window-buffer) (get-buffer bufferName))) (open-a-new-down bufferName)))))
+  (if (or (eq start (window-buffer)) (eq (window-buffer) (get-buffer bufferName)))
+      (set-this-buffer-to bufferName)
+      (open-a-new-down bufferName)))))
 
 (defun open-a-new-down (bufferName)
        (split-window-below)
