@@ -95,28 +95,66 @@
 (define-key evil-normal-state-map "gT" 'elscreen-previous) ;previous tab
 (define-key evil-normal-state-map "gt" 'elscreen-next) ;next tab
 
-;; as a result of useing elscreen I need to remap C-z C-z to be susspend
-(define-key evil-normal-state-map (kbd "C-z C-z") 'suspend-emacs)
+;; as a result of useing elscreen I need to remap C-z to be susspend
+(define-key evil-normal-state-map (kbd "C-z") 'suspend-emacs)
 
 
 (defun goBuild ()
   (interactive)
-  (shell-command "go build &> build.out")
+  (shell-command "go build" "compile")
   (gurentee-two-windows)
-  (if (get-buffer "build.out")
-      (open-build-on-other)
-    (find-file-other-window "build.out" t))
-  (other-window -1))
+  (open-on-other "compile"))
+
+(define-key evil-normal-state-map (kbd "]c") 'goBuild)
+(define-key evil-motion-state-map (kbd "]c") 'goBuild)
 
 (defun gurentee-two-windows ()
  (if (eq (length (window-list)) 1)     
       (split-window-right)))
 
-(defun open-build-on-other ()
-  (other-window 1)
-  (revert-buffer "build.out" t t) 
-  (if (not (eq (window-buffer) (get-buffer "build.out"))) 
-      (set-window-buffer nil "build.out")))
+(defun set-this-buffer-to (fileName)
+  (if (not (eq (window-buffer) (get-buffer fileName))) 
+     (set-window-buffer nil fileName)))
+ 
+(defun open-on-other (bufferName)
+  (run-on-other 1 '(lambda () 
+                     (refresh-buffer bufferName)
+  (if (not (eq (window-buffer) (get-buffer bufferName))) (open-a-new-down bufferName)))))
+
+(defun refresh-buffer (bufferName)
+  (if (buffer-file-name (get-buffer bufferName)) (revert-buffer bufferName t t)))
+
+(defun open-a-new-down (bufferName)
+       (split-window-below)
+       (run-on-other 1 '(lambda () 
+                           (set-this-buffer-to bufferName))))
+  
+(defun run-on-other (direction cmd)
+  (other-window direction)
+  (funcall cmd)
+  (other-window (- direction)))
+
+
+(defun goRun ()
+  (interactive)
+  (gurentee-two-windows)
+  (shell-command "./goBoyAdvance" "run")
+  (if (get-buffer "run")
+      (progn (open-on-other "run"))
+    ))
+
+
+(defun shell-command-on-buffer ()
+    "Asks for a command and executes it in inferior shell with current buffer
+as input."
+      (interactive)
+        (shell-command-on-region
+            (point-min) (point-max)
+               (read-shell-command "Shell command on buffer: ")))
+
+;; (run-on-other '(lambda () (print "somethings")))
+
+
 
 ;; (evil-ex "w")
 ;; (evil-ex-call-command "" "w" "")
