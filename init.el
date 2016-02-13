@@ -118,11 +118,7 @@
  
 (defun open-on-other (bufferName)
   (run-on-other 1 '(lambda () 
-                     (refresh-buffer bufferName)
   (if (not (eq (window-buffer) (get-buffer bufferName))) (open-a-new-down bufferName)))))
-
-(defun refresh-buffer (bufferName)
-  (if (buffer-file-name (get-buffer bufferName)) (revert-buffer bufferName t t)))
 
 (defun open-a-new-down (bufferName)
        (split-window-below)
