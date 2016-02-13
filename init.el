@@ -62,7 +62,8 @@
 	        (set (make-local-variable 'compile-command)
 		                "go generate && go build -v && go test -v && go vet && go run"))
         ; Godef jump key binding
-        (local-set-key (kbd "M-.") 'godef-jump))
+        (local-set-key (kbd "M-.") 'godef-jump)
+        (add-hook 'after-save-hook 'autoBuild))
 (add-hook 'go-mode-hook 'my-go-mode-hook)
 
 (setq evil-overiding-maps nil)
@@ -138,27 +139,25 @@
   (funcall cmd)
   (other-window (- direction)))
 
+(defun autoBuild ()
+  (sit-for 5)
+  ;; (shell-command "rm *flymake*")
+  (goBuild))
 
-(defun goRun ()
+;; some fun with let!
+(defun areWeTheSame ()
   (interactive)
-  (gurentee-two-windows)
-  (shell-command "./goBoyAdvance" "run")
-  (if (get-buffer "run")
-      (progn (open-on-other "run"))
-    ))
+  (let ((me (window-buffer)))
+    (other-window 1)
+     (if (eq me (window-buffer))
+         (print "they eq")
+       (print "they aint eq"))))
 
-
-(defun shell-command-on-buffer ()
-    "Asks for a command and executes it in inferior shell with current buffer
-as input."
-      (interactive)
-        (shell-command-on-region
-            (point-min) (point-max)
-               (read-shell-command "Shell command on buffer: ")))
-
+;; running function and passing lambdas
 ;; (run-on-other '(lambda () (print "somethings")))
 
 
+;; stuff with evil
 
 ;; (evil-ex "w")
 ;; (evil-ex-call-command "" "w" "")
