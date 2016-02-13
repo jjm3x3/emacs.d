@@ -104,10 +104,8 @@
   (shell-command "go build &> build.out")
   (gurentee-two-windows)
   (if (get-buffer "build.out")
-      (progn (print "does it happen in here?")
-             (open-build-on-other))
-    (progn (print "or in here?")
-           (find-file-other-window "build.out" t)))
+      (open-build-on-other)
+    (find-file-other-window "build.out" t))
   (other-window -1))
 
 (defun gurentee-two-windows ()
