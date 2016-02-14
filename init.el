@@ -108,7 +108,7 @@
   (interactive)
   (shell-command "go build" "compile")
   (gurentee-two-windows)
-  (open-on-other (window-buffer) "compile"))
+  (open-on-other (window-buffer) "compile" '(lambda () (or (eq start (window-buffer)) (eq (window-buffer) (get-buffer "compile")) (eq (window-buffer) (get-buffer "run"))))))
 
 (defun goRun ()
   (interactive)
@@ -127,11 +127,12 @@
   (if (not (eq (window-buffer) (get-buffer fileName))) 
      (set-window-buffer nil fileName)))
  
-(defun open-on-other (start bufferName)
+(defun open-on-other (start bufferName &optional condition)
   (run-on-other 1 '(lambda () 
-  (if (or (eq start (window-buffer)) (eq (window-buffer) (get-buffer bufferName)))
-      (set-this-buffer-to bufferName)
-      (open-a-new-down bufferName)))))
+  (if condition (if (funcall condition)
+                   (set-this-buffer-to bufferName)
+                 (open-a-new-down bufferName))
+    (set-this-buffer-to bufferName)))))
 
 (defun open-a-new-down (bufferName)
        (split-window-below)
