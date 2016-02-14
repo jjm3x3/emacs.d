@@ -149,6 +149,13 @@
   ;; (shell-command "rm *flymake*")
   (goBuild))
 
+;; TODO
+;; I sitll want to move \# files!
+;; make it so that quiting a tab doesn close emacs
+;;      ( elscreen-kill ) ?
+
+
+
 ;; some fun with let!
 (defun areWeTheSame ()
   (interactive)
@@ -163,6 +170,13 @@
 
 
 ;; stuff with evil
+
+
+(defun printThing ()
+  (print "does a thing"))
+
+;; (add-hook 'delete-window 'printThing)
+(add-hook 'delete-frame-hook 'printThing)
 
 ;; (evil-ex "w")
 ;; (evil-ex-call-command "" "w" "")
