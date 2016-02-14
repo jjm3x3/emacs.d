@@ -2,7 +2,7 @@
 (load "flymake-cursor.el")
 
 ; list the packages you want
-(setq package-list '(evil neotree elscreen))
+(setq package-list '(evil neotree elscreen evil-surround))
 
 (require 'package)
 (push '("marmalade" . "http://marmalade-repo.org/packages/")
@@ -29,6 +29,9 @@
 (ido-mode t)
 
 (show-paren-mode 1)
+
+(require 'evil-surround)
+(global-evil-surround-mode 1)
 
 (global-linum-mode 1)
 (setq linum-format "%3d ")
