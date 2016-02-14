@@ -66,7 +66,7 @@
 		                "go generate && go build -v && go test -v && go vet && go run"))
         ; Godef jump key binding
         (local-set-key (kbd "M-.") 'godef-jump)
-        (add-hook 'after-save-hook 'autoBuild))
+        (add-hook 'after-save-hook 'autoBuild t t))
 (add-hook 'go-mode-hook 'my-go-mode-hook)
 
 (setq evil-overiding-maps nil)
