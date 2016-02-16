@@ -10,7 +10,7 @@
 (push '("melpa" . "http://melpa.org/packages/")
       package-archives)
 (package-initialize)
-
+(list-packages)
 ;fetch a list of packages availible
 (unless package-archive-contents
     (package-refresh-contents))
