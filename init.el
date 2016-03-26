@@ -20,57 +20,26 @@
     (unless (package-installed-p package)
           (package-install package)))
 
+;; configure emacs base
+(require 'ido)
+(ido-mode t)
+(global-linum-mode 1)
+(setq linum-format "%3d ")
+(setq-default indent-tabs-mode nil)
+(show-paren-mode 1)
+(custom-set-variables)
+
+;; configure evil specific things
 (setq evil-toggle-key "C-\\")
 (require 'evil)
 (evil-mode 1)
 (setq evil-sec-delay 0)
-
-(require 'ido)
-(ido-mode t)
-
-(show-paren-mode 1)
-
-(require 'evil-surround)
-(global-evil-surround-mode 1)
-
-(global-linum-mode 1)
-(setq linum-format "%3d ")
-(setq-default indent-tabs-mode nil)
-
-(defun my-go-mode-hook ()
-      ; Customize compile command to run go build
-      (if (not (string-match "go" compile-command))
-	        (set (make-local-variable 'compile-command)
-		                "go build -v"))
-        ; Godef jump key binding
-        (local-set-key (kbd "M-.") 'godef-jump))
-(add-hook 'go-mode-hook 'my-go-mode-hook)
-
-(require 'go-autocomplete)
-(require 'auto-complete-config)
-(ac-config-default)
-
-(eval-after-load "go-mode"
-  '(require 'flymake-go))
-
-(require 'flymake-cursor)
-
-(add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
-
-(defun my-go-mode-hook ()
-    ; Call Gofmt before saving
-    (add-hook 'before-save-hook 'gofmt-before-save)
-      ; Customize compile command to run go build
-      (if (not (string-match "go" compile-command))
-	        (set (make-local-variable 'compile-command)
-		                "go generate && go build -v && go test -v && go vet && go run"))
-        ; Godef jump key binding
-        (local-set-key (kbd "M-.") 'godef-jump)
-        (add-hook 'after-save-hook 'autoBuild t t))
-(add-hook 'go-mode-hook 'my-go-mode-hook)
-
 (setq evil-overiding-maps nil)
 (setq evil-intercept-maps nil)
+
+;; configure some plugins 
+(require 'evil-surround)
+(global-evil-surround-mode 1)
 
 (require 'neotree)
 
@@ -84,6 +53,10 @@
            (define-key evil-normal-state-local-map "I" 'neotree-hidden-file-toggle)
            (define-key evil-normal-state-local-map "C" 'neotree-change-root)
            (define-key evil-normal-state-local-map (kbd "RET") 'neotree-enter)))
+
+;; make sure the tree leaf faces are white
+(custom-set-faces
+ '(neo-file-link-face ((t (:foreground "White")))))
 
 ; (defun my-move-key (keymap-from keymap-to key)
        ; "Moves key binding from one keymap to another, deleting from the old location. "
@@ -103,6 +76,45 @@
 ;; as a result of useing elscreen I need to remap C-z to be susspend
 (define-key evil-normal-state-map (kbd "C-z") 'suspend-emacs)
 
+;; golang settings from here down
+(defun my-go-mode-hook ()
+      ; Customize compile command to run go build
+      (if (not (string-match "go" compile-command))
+	        (set (make-local-variable 'compile-command)
+		                "go build -v"))
+        ; Godef jump key binding
+        (local-set-key (kbd "M-.") 'godef-jump))
+(add-hook 'go-mode-hook 'my-go-mode-hook)
+
+(require 'go-autocomplete)
+(require 'auto-complete-config)
+(ac-config-default)
+
+(eval-after-load "go-mode"
+  '(require 'flymake-go))
+
+(require 'flymake-cursor)
+
+(defun my-go-mode-hook ()
+    ; Call Gofmt before saving
+    (add-hook 'before-save-hook 'gofmt-before-save)
+      ; Customize compile command to run go build
+      (if (not (string-match "go" compile-command))
+	        (set (make-local-variable 'compile-command)
+		                "go generate && go build -v && go test -v && go vet && go run"))
+        ; Godef jump key binding
+        (local-set-key (kbd "M-.") 'godef-jump)
+        (add-hook 'after-save-hook 'autoBuild t t))
+(add-hook 'go-mode-hook 'my-go-mode-hook)
+
+;; first part of haskell configuration
+(add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
+
+;; setup for ruby specifily rails
+(add-to-list 'auto-mode-alist '("\\.jbuilder$" . ruby-mode))
+(add-to-list 'auto-mode-alist '("\\.builder$" . ruby-mode))
+(add-to-list 'auto-mode-alist '("\\Gemfile$" . ruby-mode))
+(add-to-list 'auto-mode-alist '("\\.erb$" . ruby-mode))
 
 (defun goBuild ()
   (interactive)
@@ -113,7 +125,7 @@
 (defun goRun ()
   (interactive)
   (gurentee-two-windows)
-  (shell-command "./goBoyAdvance" "run")
+  (shell-command "./go-settlers" "run")
   (open-on-other (window-buffer) "run"))
 
 (define-key evil-normal-state-map (kbd "]c") 'goBuild)
@@ -181,3 +193,5 @@
 ;; (evil-ex "w")
 ;; (evil-ex-call-command "" "w" "")
 ;; (with-no-warnings)
+
+
