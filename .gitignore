@@ -4,3 +4,4 @@ ido*
 *.swp
 elpa/
 *\#*
+*.cache

@@ -126,6 +126,15 @@
 (add-to-list 'auto-mode-alist '("\\Gemfile$" . ruby-mode))
 (add-to-list 'auto-mode-alist '("\\.erb$" . ruby-mode))
 
+;; add some pretty ness for rake
+(ansi-color-for-comint-mode-on)
+(require 'ansi-color)
+(defun colorize-compilation-buffer ()
+         (toggle-read-only)
+           (ansi-color-apply-on-region (point-min) (point-max))
+             (toggle-read-only))
+(add-hook 'compilation-filter-hook 'colorize-compilation-buffer)
+
 (defun goBuild ()
   (interactive)
   (shell-command "go build" "compile")
