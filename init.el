@@ -32,6 +32,12 @@
 (show-paren-mode 1)
 (custom-set-variables)
 
+;; setup to not autosave in the current dir
+(setq backup-directory-alist
+      `((".*" . ,temporary-file-directory)))
+(setq auto-save-file-name-transforms
+      `((".*" ,temporary-file-directory t)))
+
 ;; configure evil specific things
 (setq evil-toggle-key "C-\\")
 (require 'evil)
