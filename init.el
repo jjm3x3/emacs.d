@@ -70,12 +70,12 @@
 
 (load "elscreen" "ElScreen" t)
 (elscreen-start)
+(load "evil-elscreen.el")
 (define-key evil-normal-state-map (kbd "C-w t") 'elscreen-create) ;creat tab
 (define-key evil-normal-state-map (kbd "C-w x") 'elscreen-kill) ;kill tab
 
 (define-key evil-normal-state-map "gT" 'elscreen-previous) ;previous tab
 (define-key evil-normal-state-map "gt" 'elscreen-next) ;next tab
-(load "evil-elscreen.el")
 
 ;; as a result of useing elscreen I need to remap C-z to be susspend
 (define-key evil-normal-state-map (kbd "C-z") 'suspend-emacs)
@@ -206,26 +206,32 @@
 "Vimlike ':q' behavior: close current window if there are split windows;
 otherwise, close current tab (elscreen)."
 (interactive)
-        (let ((one-elscreen (elscreen-one-screen-p))
-                      (one-window (one-window-p))
-                              )
-              (cond
-                    ; if current tab has split windows in it, close the current live window
-                    ((not one-window)
-                           (delete-window) ; delete the current window
-                                 (balance-windows) ; balance remaining windows
-                                       nil)
-                         ; if there are multiple elscreens (tabs), close the current elscreen
-                         ((not one-elscreen)
-                                (elscreen-kill)
-                                      nil)
-                              ; if there is only one elscreen, just try to quit (calling elscreen-kill
-                              ; will not work, because elscreen-kill fails if there is only one
-                              ; elscreen)
-                              (one-elscreen
-                                     (evil-quit)
-                                           nil)
-                                   )))
+(let ((one-elscreen (elscreen-one-screen-p))
+      (one-window (one-window-p)))
+  (cond
+                                        ; if current tab has split windows in it, close the current live window
+   ((not one-window)
+    (delete-window) ; delete the current window
+    (balance-windows) ; balance remaining windows
+    nil)
+                                        ; if there are multiple elscreens (tabs), close the current elscreen
+   ((not one-elscreen)
+    (elscreen-kill)
+    nil)
+                                        ; if there is only one elscreen, just try to quit (calling elscreen-kill
+                                        ; will not work, because elscreen-kill fails if there is only one
+                                        ; elscreen)
+   (one-elscreen
+    (evil-quit)
+    nil)
+   )))
+
+; make sure that I can save and vimlike-quit
+(defun save-vimlike-quit ()
+  (interactive)
+  (save-buffer)
+  (vimlike-quit))
 
 
 (evil-ex-define-cmd "q" 'vimlike-quit)
+(evil-ex-define-cmd "wq" 'save-vimlike-quit)
