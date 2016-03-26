@@ -159,10 +159,10 @@ If the {file} is nil, create a new tab page with *scratch* buffer, after the cur
 
 ;;;;;;;; evil-mode keymaps
 ;; Normal map
-(define-key evil-normal-state-map (kbd "gt") 'evil-elscreen/tab-next)
-(define-key evil-normal-state-map (kbd "C-<next>") 'evil-elscreen/tab-next)
-(define-key evil-normal-state-map (kbd "gT") 'evil-elscreen/tab-previous)
-(define-key evil-normal-state-map (kbd "C-<prior>") 'evil-elscreen/tab-previous)
+;; (define-key evil-normal-state-map (kbd "gt") 'evil-elscreen/tab-next)
+;; (define-key evil-normal-state-map (kbd "C-<next>") 'evil-elscreen/tab-next)
+;; (define-key evil-normal-state-map (kbd "gT") 'evil-elscreen/tab-previous)
+;; (define-key evil-normal-state-map (kbd "C-<prior>") 'evil-elscreen/tab-previous)
 
 ;; Insert map
 (define-key evil-insert-state-map (kbd "C-<next>") 'evil-elscreen/tab-next)

@@ -195,12 +195,14 @@
 ;; (evil-ex-call-command "" "w" "")
 ;; (with-no-warnings)
 
+; I owe it to this site
+;; https://zuttobenkyou.wordpress.com/2012/06/15/emacs-vimlike-tabwindow-navigation/
 ; Either close the current elscreen, or if only one screen, use the ":q" Evil
 ; command; this simulates the ":q" behavior of Vim when used with tabs.
 (defun vimlike-quit ()
-    "Vimlike ':q' behavior: close current window if there are split windows;
+"Vimlike ':q' behavior: close current window if there are split windows;
 otherwise, close current tab (elscreen)."
-      (interactive)
+(interactive)
         (let ((one-elscreen (elscreen-one-screen-p))
                       (one-window (one-window-p))
                               )
