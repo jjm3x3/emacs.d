@@ -10,7 +10,10 @@
 (push '("melpa" . "http://melpa.org/packages/")
       package-archives)
 (package-initialize)
-(list-packages)
+
+;; uncomment if cloneing and the doesn't load
+;; (list-packages)                    
+
 ;fetch a list of packages availible
 (unless package-archive-contents
     (package-refresh-contents))
