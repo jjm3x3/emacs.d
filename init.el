@@ -144,11 +144,14 @@
 (defun goRun ()
   (interactive)
   (gurentee-two-windows)
-  (shell-command "./go-settlers" "run")
+  (shell-command "./set1" "run")
   (open-on-other (window-buffer) "run"))
 
 (define-key evil-normal-state-map (kbd "]c") 'goBuild)
 (define-key evil-motion-state-map (kbd "]c") 'goBuild)
+
+(define-key evil-normal-state-map (kbd "]r") 'goRun)
+(define-key evil-motion-state-map (kbd "]r") 'goRun)
 
 (defun gurentee-two-windows ()
  (if (eq (length (window-list)) 1)     
