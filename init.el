@@ -126,6 +126,9 @@
 (add-to-list 'auto-mode-alist '("\\Gemfile$" . ruby-mode))
 (add-to-list 'auto-mode-alist '("\\.erb$" . ruby-mode))
 
+(require 'web-mode)
+(add-to-list 'auto-mode-alist '("\\.jsx\\'" . web-mode))
+
 ;; add some pretty ness for rake
 (ansi-color-for-comint-mode-on)
 (require 'ansi-color)
