@@ -29,6 +29,7 @@
 (global-linum-mode 1)
 (setq linum-format "%3d ")
 (setq-default indent-tabs-mode nil)
+(setq-default  tab-width 4)
 (show-paren-mode 1)
 (custom-set-variables)
 
