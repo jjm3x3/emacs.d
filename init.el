@@ -26,6 +26,7 @@
 ;; configure emacs base
 (require 'ido)
 (ido-mode t)
+(setq line-move-visual t)
 (global-linum-mode 1)
 (setq linum-format "%3d ")
 (setq-default indent-tabs-mode nil)
