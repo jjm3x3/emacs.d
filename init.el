@@ -228,7 +228,7 @@
 (defun printThing ()
   (print "does a thing"))
 
-(append-to-file 1 100 "/home/jmeixner/window-state.txt")
+;; (append-to-file 1 100 "/home/jmeixner/window-state.txt")
 
 
 (defun windowMap ()
