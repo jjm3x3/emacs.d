@@ -141,15 +141,15 @@
 
 (defun goBuild ()
   (interactive)
-  (shell-command "go build" "compile")
+  (async-shell-command "go build" "*compile*")
   (gurentee-two-windows)
-  (open-on-other (window-buffer) "compile" '(lambda () (or (eq start (window-buffer)) (eq (window-buffer) (get-buffer "compile")) (eq (window-buffer) (get-buffer "run"))))))
+  (open-on-other (window-buffer) "*compile*" '(lambda () (or (eq start (window-buffer)) (eq (window-buffer) (get-buffer "*compile*")) (eq (window-buffer) (get-buffer "*run*"))))))
 
 (defun goRun ()
   (interactive)
   (gurentee-two-windows)
-  (shell-command "./set1" "run")
-  (open-on-other (window-buffer) "run"))
+  (async-shell-command "go run main.go, event" "*run*")
+  (open-on-other (window-buffer) "*run*"))
 
 (define-key evil-normal-state-map (kbd "]c") 'goBuild)
 (define-key evil-motion-state-map (kbd "]c") 'goBuild)
@@ -185,7 +185,8 @@
 (defun autoBuild ()
   (sit-for 5)
   ;; (shell-command "rm *flymake*")
-  (goBuild))
+  ;; (goBuild)
+  )
 
 ;; TODO
 ;; I sitll want to move \# files!
