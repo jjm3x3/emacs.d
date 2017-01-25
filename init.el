@@ -26,6 +26,7 @@
 ;; configure emacs base
 (require 'ido)
 (ido-mode t)
+(setq line-move-visual t)
 (global-linum-mode 1)
 (setq linum-format "%3d ")
 (setq-default indent-tabs-mode nil)
@@ -152,10 +153,10 @@
 
 (defun goBuild ()
   (interactive)
-  (async-shell-command "go build" "*compile*")
+  (async-shell-command "go build" "compile")
   (gurentee-two-windows)
-  (open-on-other (window-buffer) "*compile*" '(lambda () (or (eq start (window-buffer)) (eq (window-buffer) (get-buffer "*compile*")) (eq (window-buffer) (get-buffer "*run*"))))))
-
+  (open-on-other (window-buffer) "compile" '(lambda () (or (eq start (window-buffer)) 
+                                                           (eq (window-buffer) (get-buffer "compile")) 
 (defun goRun ()
   (interactive)
   (gurentee-two-windows)
@@ -184,9 +185,12 @@
  
 (defun open-on-other (start bufferName &optional condition)
   (run-on-other 1 '(lambda () 
-  (if condition (if (funcall condition)
-                   (set-this-buffer-to bufferName)
-                 (open-a-new-down bufferName))
+                     (jLog (concat "is there a condition? " (bool-to-string (not (eq condition nil)))))
+  (if (not (eq condition nil)) 
+      ((jLog (concat "is the condition true?: " (bool-to-string (funcall condition))))
+       (if (funcall condition)
+           (set-this-buffer-to bufferName)
+         (open-a-new-down bufferName)))
     (set-this-buffer-to bufferName)))))
 
 (defun open-a-new-down (bufferName)
@@ -196,8 +200,17 @@
   
 (defun run-on-other (direction cmd)
   (other-window direction)
+  (jLog (concat "running command on " (buffer-name)))
   (funcall cmd)
   (other-window (- direction)))
+
+(defun jLog (thing) 
+  (write-region (concat thing "\n") nil "/home/jmeixner/runLog.log" 'append))
+
+(defun bool-to-string (bool) 
+  (if bool "true" "false"))
+
+(bool-to-string t)
 
 (defun autoBuild ()
   (sit-for 5)
@@ -231,8 +244,27 @@
 (defun printThing ()
   (print "does a thing"))
 
+;; (append-to-file 1 100 "/home/jmeixner/window-state.txt")
+
+
+(defun windowMap ()
+  (windowMapFrom (buffer-name)))
+
+(defun windowMapFrom (start)
+  (other-window 1)
+  (write-region (concat (buffer-name) " | ") nil "/home/jmeixner/new-winow.txt" 'append)
+  (if (not (eq (buffer-name) start))
+      (windowMapFrom start)))
+
+(windowMap)
+
+(other-window 1)
+(write-region (concat (buffer-name) " | ")  nil "new-winow.txt" 'append)
+
+(printThing)
+
 ;; (add-hook 'delete-window 'printThing)
-(add-hook 'delete-frame-hook 'printThing)
+;; (add-hook 'delete-frame-hook 'printThing)
 
 ;; (evil-ex "w")
 ;; (evil-ex-call-command "" "w" "")
