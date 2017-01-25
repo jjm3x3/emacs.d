@@ -32,6 +32,7 @@
 (setq-default  tab-width 4)
 (show-paren-mode 1)
 (custom-set-variables)
+ (global-auto-revert-mode 1)
 
 ;; setup to not autosave in the current dir
 (setq backup-directory-alist
