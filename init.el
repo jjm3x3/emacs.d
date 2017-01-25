@@ -151,6 +151,12 @@
   (async-shell-command "go run main.go, event" "*run*")
   (open-on-other (window-buffer) "*run*"))
 
+(defun jsRun ()
+  (interactive)
+  (gurentee-two-windows)
+  (async-shell-command "node main.js" "*run*")
+  (open-on-other (window-buffer) "*run*"))
+
 (define-key evil-normal-state-map (kbd "]c") 'goBuild)
 (define-key evil-motion-state-map (kbd "]c") 'goBuild)
 
