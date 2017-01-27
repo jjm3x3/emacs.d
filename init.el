@@ -156,7 +156,7 @@
   (async-shell-command "go build" "compile")
   (gurentee-two-windows)
   (open-on-other (window-buffer) "compile" '(lambda () (or (eq start (window-buffer)) 
-                                                           (eq (window-buffer) (get-buffer "compile")) 
+                                                           (eq (window-buffer) (get-buffer "compile"))))))
 (defun goRun ()
   (interactive)
   (gurentee-two-windows)
