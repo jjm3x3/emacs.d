@@ -259,7 +259,7 @@
 (windowMap)
 
 (other-window 1)
-(write-region (concat (buffer-name) " | ")  nil "new-winow.txt" 'append)
+; (write-region (concat (buffer-name) " | ")  nil "new-winow.txt" 'append)
 
 (printThing)
 
