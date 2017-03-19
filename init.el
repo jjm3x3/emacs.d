@@ -1,7 +1,6 @@
-(add-to-list 'load-path "~/.emacs.d/lisp")
-(load "flymake-cursor.el")
+(add-to-list 'load-path "~/.emacs.d/lisp") (load "flymake-cursor.el")
 
-; list the packages you want
+;list the packages you want 
 (setq package-list '(evil neotree elscreen evil-surround))
 
 (require 'package)
@@ -99,15 +98,18 @@
 ;; as a result of useing elscreen I need to remap C-z to be susspend
 (define-key evil-normal-state-map (kbd "C-z") 'suspend-emacs)
 
-;; golang settings from here down
-(defun my-go-mode-hook ()
-      ; Customize compile command to run go build
-      (if (not (string-match "go" compile-command))
-	        (set (make-local-variable 'compile-command)
-		                "go build -v"))
-        ; Godef jump key binding
-        (local-set-key (kbd "M-.") 'godef-jump))
-(add-hook 'go-mode-hook 'my-go-mode-hook)
+;; ;; golang settings from here down
+;; (defun my-go-mode-hook ()
+;;       ; Customize compile command to run go build
+;;       (if (not (string-match "go" compile-command))
+;; 	        (set (make-local-variable 'compile-command)
+;; 		                "go build -v"))
+;;         ; Godef jump key binding
+;;         (local-set-key (kbd "M-.") 'godef-jump))
+; (defun log-mode-started ()
+;   (jLog "some mode started"))
+
+; (add-hook 'go-mode-hook 'log-mode-started)
 
 (require 'go-autocomplete)
 (require 'auto-complete-config)
@@ -118,17 +120,23 @@
 
 (require 'flymake-cursor)
 
-(defun my-go-mode-hook ()
-    ; Call Gofmt before saving
-    (add-hook 'before-save-hook 'gofmt-before-save)
-      ; Customize compile command to run go build
-      (if (not (string-match "go" compile-command))
-	        (set (make-local-variable 'compile-command)
-		                "go generate && go build -v && go test -v && go vet && go run"))
-        ; Godef jump key binding
-        (local-set-key (kbd "M-.") 'godef-jump)
-        (add-hook 'after-save-hook 'autoBuild t t))
-(add-hook 'go-mode-hook 'my-go-mode-hook)
+; (defun my-go-remove-unused-imports ()
+;   (jLog "removing unuzed imports")
+;   (go-remove-unused-imports t))
+
+; (defun my-go-mode-hook ()
+;     ; Call Gofmt before saving
+;   (jLog "this is my own go-mode-hook")
+;   (add-hook 'before-save-hook 'my-go-remove-unused-imports)
+;   (jLog "added go-remove-unused-imports")
+;     (add-hook 'before-save-hook 'gofmt-before-save)
+;       ; Customize compile command to run go build
+;       (if (not (string-match "go" compile-command))
+; 	        (set (make-local-variable 'compile-command)
+; 		                "go generate && go build -v && go test -v && go vet && go run"))
+;         ; Godef jump key binding
+;         (local-set-key (kbd "M-.") 'godef-jump)
+;         (add-hook 'after-save-hook 'autoBuild t t))
 
 ;; first part of haskell configuration
 (add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
@@ -150,125 +158,6 @@
            (ansi-color-apply-on-region (point-min) (point-max))
              (toggle-read-only))
 (add-hook 'compilation-filter-hook 'colorize-compilation-buffer)
-
-(defun goBuild ()
-  (interactive)
-  (async-shell-command "go build" "compile")
-  (gurentee-two-windows)
-  (open-on-other (window-buffer) "compile" '(lambda () (or (eq start (window-buffer)) 
-                                                           (eq (window-buffer) (get-buffer "compile"))))))
-(defun goRun ()
-  (interactive)
-  (gurentee-two-windows)
-  (async-shell-command "go run main.go, event" "*run*")
-  (open-on-other (window-buffer) "*run*"))
-
-(defun jsRun ()
-  (interactive)
-  (gurentee-two-windows)
-  (async-shell-command "node main.js" "*run*")
-  (open-on-other (window-buffer) "*run*"))
-
-(define-key evil-normal-state-map (kbd "]c") 'goBuild)
-(define-key evil-motion-state-map (kbd "]c") 'goBuild)
-
-(define-key evil-normal-state-map (kbd "]r") 'goRun)
-(define-key evil-motion-state-map (kbd "]r") 'goRun)
-
-(defun gurentee-two-windows ()
- (if (eq (length (window-list)) 1)     
-      (split-window-right)))
-
-(defun set-this-buffer-to (fileName)
-  (if (not (eq (window-buffer) (get-buffer fileName))) 
-     (set-window-buffer nil fileName)))
- 
-(defun open-on-other (start bufferName &optional condition)
-  (run-on-other 1 '(lambda () 
-                     (jLog (concat "is there a condition? " (bool-to-string (not (eq condition nil)))))
-  (if (not (eq condition nil)) 
-      ((jLog (concat "is the condition true?: " (bool-to-string (funcall condition))))
-       (if (funcall condition)
-           (set-this-buffer-to bufferName)
-         (open-a-new-down bufferName)))
-    (set-this-buffer-to bufferName)))))
-
-(defun open-a-new-down (bufferName)
-       (split-window-below)
-       (run-on-other 1 '(lambda () 
-                           (set-this-buffer-to bufferName))))
-  
-(defun run-on-other (direction cmd)
-  (other-window direction)
-  (jLog (concat "running command on " (buffer-name)))
-  (funcall cmd)
-  (other-window (- direction)))
-
-(defun jLog (thing) 
-  (write-region (concat thing "\n") nil "/home/jmeixner/runLog.log" 'append))
-
-(defun bool-to-string (bool) 
-  (if bool "true" "false"))
-
-(bool-to-string t)
-
-(defun autoBuild ()
-  (sit-for 5)
-  ;; (shell-command "rm *flymake*")
-  ;; (goBuild)
-  )
-
-;; TODO
-;; I sitll want to move \# files!
-;; make it so that quiting a tab doesn close emacs
-;;      ( elscreen-kill ) ?
-
-
-
-;; some fun with let!
-(defun areWeTheSame ()
-  (interactive)
-  (let ((me (window-buffer)))
-    (other-window 1)
-     (if (eq me (window-buffer))
-         (print "they eq")
-       (print "they aint eq"))))
-
-;; running function and passing lambdas
-;; (run-on-other '(lambda () (print "somethings")))
-
-
-;; stuff with evil
-
-
-(defun printThing ()
-  (print "does a thing"))
-
-;; (append-to-file 1 100 "/home/jmeixner/window-state.txt")
-
-
-(defun windowMap ()
-  (windowMapFrom (buffer-name)))
-
-(defun windowMapFrom (start)
-  (other-window 1)
-  (write-region (concat (buffer-name) " | ") nil "/home/jmeixner/new-winow.txt" 'append)
-  (if (not (eq (buffer-name) start))
-      (windowMapFrom start)))
-
-(windowMap)
-
-(other-window 1)
-; (write-region (concat (buffer-name) " | ")  nil "new-winow.txt" 'append)
-
-(printThing)
-
-;; (add-hook 'delete-window 'printThing)
-;; (add-hook 'delete-frame-hook 'printThing)
-
-;; (evil-ex "w")
-;; (evil-ex-call-command "" "w" "")
-;; (with-no-warnings)
 
 ; I owe it to this site
 ;; https://zuttobenkyou.wordpress.com/2012/06/15/emacs-vimlike-tabwindow-navigation/
@@ -307,3 +196,51 @@ otherwise, close current tab (elscreen)."
 
 (evil-ex-define-cmd "q" 'vimlike-quit)
 (evil-ex-define-cmd "wq" 'save-vimlike-quit)
+
+(define-key evil-normal-state-map (kbd "F") 'ido-find-file-other-window)
+(define-key evil-motion-state-map (kbd "F") 'ido-find-file-other-window) 
+
+(require 'tmux-build)
+
+(setq debug-on-error t)
+
+
+(defun my-go-unused-imports-lines ()
+  ;; FIXME Technically, -o /dev/null fails in quite some cases (on
+  ;; Windows, when compiling from within GOPATH). Practically,
+  ;; however, it has the same end result: There won't be a
+  ;; compiled binary/archive, and we'll get our import errors when
+  ;; there are any.
+  (reverse (remove nil
+                   (mapcar
+                    (lambda (line)
+                      (when (string-match "^\\(.+\\):\\([[:digit:]]+\\): imported and not used: \".+\".*$" line)
+                        (let ((error-file-name (match-string 1 line))
+                              (error-line-num (match-string 2 line)))
+                          (if (string= (file-truename error-file-name) (file-truename buffer-file-name))
+                              (string-to-number error-line-num)))))
+                    (split-string (shell-command-to-string
+                                   (concat go-command
+                                           (if (string-match "_test\.go$" buffer-file-truename)
+                                               " test -c"
+                                             " build -o /dev/null"))) "\n")))))
+(advice-add 'go-unused-imports-lines :override #'my-go-unused-imports-lines)
+
+(defun go-comment-unused-imports ()
+  (interactive)
+  (go-remove-unused-imports t))
+
+(define-key evil-normal-state-map (kbd "]o") 'go-comment-unused-imports)
+(define-key evil-motion-state-map (kbd "]o") 'go-comment-unused-imports) 
+
+(setq gofmt-command "goimports")
+;; (add-to-list 'load-path "/home/you/somewhere/emacs/")
+(require 'go-mode)
+;; (add-hook 'before-save-hook 'gofmt-before-save)
+
+
+(defun my-go-mode-hook ()
+  (add-hook 'before-save-hook 'gofmt-before-save))
+  
+(add-hook 'go-mode-hook 'my-go-mode-hook)
+
