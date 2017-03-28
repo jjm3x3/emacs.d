@@ -99,17 +99,44 @@
 (define-key evil-normal-state-map (kbd "C-z") 'suspend-emacs)
 
 ;; ;; golang settings from here down
-;; (defun my-go-mode-hook ()
-;;       ; Customize compile command to run go build
-;;       (if (not (string-match "go" compile-command))
-;; 	        (set (make-local-variable 'compile-command)
-;; 		                "go build -v"))
-;;         ; Godef jump key binding
-;;         (local-set-key (kbd "M-.") 'godef-jump))
-; (defun log-mode-started ()
-;   (jLog "some mode started"))
+(defun my-go-unused-imports-lines ()
+  ;; FIXME Technically, -o /dev/null fails in quite some cases (on
+  ;; Windows, when compiling from within GOPATH). Practically,
+  ;; however, it has the same end result: There won't be a
+  ;; compiled binary/archive, and we'll get our import errors when
+  ;; there are any.
+  (reverse (remove nil
+                   (mapcar
+                    (lambda (line)
+                      (when (string-match "^\\(.+\\):\\([[:digit:]]+\\): imported and not used: \".+\".*$" line)
+                        (let ((error-file-name (match-string 1 line))
+                              (error-line-num (match-string 2 line)))
+                          (if (string= (file-truename error-file-name) (file-truename buffer-file-name))
+                              (string-to-number error-line-num)))))
+                    (split-string (shell-command-to-string
+                                   (concat go-command
+                                           (if (string-match "_test\.go$" buffer-file-truename)
+                                               " test -c"
+                                             " build -o /dev/null"))) "\n")))))
+(advice-add 'go-unused-imports-lines :override #'my-go-unused-imports-lines)
 
-; (add-hook 'go-mode-hook 'log-mode-started)
+(defun go-comment-unused-imports ()
+  (interactive)
+  (go-remove-unused-imports t))
+
+(define-key evil-normal-state-map (kbd "]o") 'go-comment-unused-imports)
+(define-key evil-motion-state-map (kbd "]o") 'go-comment-unused-imports) 
+
+(setq gofmt-command "goimports")
+(require 'go-mode)
+
+(defun my-go-mode-hook ()
+  (add-hook 'before-save-hook 'gofmt-before-save)
+  (define-key evil-normal-state-map (kbd "M-.") 'godef-jump)
+  (define-key evil-motion-state-map (kbd "M-.") 'godef-jump) 
+  )
+  
+(add-hook 'go-mode-hook 'my-go-mode-hook)
 
 (require 'go-autocomplete)
 (require 'auto-complete-config)
@@ -120,23 +147,6 @@
 
 (require 'flymake-cursor)
 
-; (defun my-go-remove-unused-imports ()
-;   (jLog "removing unuzed imports")
-;   (go-remove-unused-imports t))
-
-; (defun my-go-mode-hook ()
-;     ; Call Gofmt before saving
-;   (jLog "this is my own go-mode-hook")
-;   (add-hook 'before-save-hook 'my-go-remove-unused-imports)
-;   (jLog "added go-remove-unused-imports")
-;     (add-hook 'before-save-hook 'gofmt-before-save)
-;       ; Customize compile command to run go build
-;       (if (not (string-match "go" compile-command))
-; 	        (set (make-local-variable 'compile-command)
-; 		                "go generate && go build -v && go test -v && go vet && go run"))
-;         ; Godef jump key binding
-;         (local-set-key (kbd "M-.") 'godef-jump)
-;         (add-hook 'after-save-hook 'autoBuild t t))
 
 ;; first part of haskell configuration
 (add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
@@ -204,43 +214,4 @@ otherwise, close current tab (elscreen)."
 
 (setq debug-on-error t)
 
-
-(defun my-go-unused-imports-lines ()
-  ;; FIXME Technically, -o /dev/null fails in quite some cases (on
-  ;; Windows, when compiling from within GOPATH). Practically,
-  ;; however, it has the same end result: There won't be a
-  ;; compiled binary/archive, and we'll get our import errors when
-  ;; there are any.
-  (reverse (remove nil
-                   (mapcar
-                    (lambda (line)
-                      (when (string-match "^\\(.+\\):\\([[:digit:]]+\\): imported and not used: \".+\".*$" line)
-                        (let ((error-file-name (match-string 1 line))
-                              (error-line-num (match-string 2 line)))
-                          (if (string= (file-truename error-file-name) (file-truename buffer-file-name))
-                              (string-to-number error-line-num)))))
-                    (split-string (shell-command-to-string
-                                   (concat go-command
-                                           (if (string-match "_test\.go$" buffer-file-truename)
-                                               " test -c"
-                                             " build -o /dev/null"))) "\n")))))
-(advice-add 'go-unused-imports-lines :override #'my-go-unused-imports-lines)
-
-(defun go-comment-unused-imports ()
-  (interactive)
-  (go-remove-unused-imports t))
-
-(define-key evil-normal-state-map (kbd "]o") 'go-comment-unused-imports)
-(define-key evil-motion-state-map (kbd "]o") 'go-comment-unused-imports) 
-
-(setq gofmt-command "goimports")
-;; (add-to-list 'load-path "/home/you/somewhere/emacs/")
-(require 'go-mode)
-;; (add-hook 'before-save-hook 'gofmt-before-save)
-
-
-(defun my-go-mode-hook ()
-  (add-hook 'before-save-hook 'gofmt-before-save))
-  
-(add-hook 'go-mode-hook 'my-go-mode-hook)
 
