@@ -41,7 +41,10 @@
  '(ansi-color-names-vector
    ["#242424" "#e5786d" "#95e454" "#cae682" "#8ac6f2" "#333366" "#ccaa8f" "#f6f3e8"])
  '(custom-enabled-themes (quote (wheatgrass)))
- '(org-agenda-files (quote ("~/todo.txt"))))
+ '(org-agenda-files (quote ("~/todo.txt")))
+ '(package-selected-packages
+   (quote
+    (rust-mode web-mode rake neotree haskell-mode goto-last-change go-mode flymake-go evil-surround elscreen auto-complete ansi))))
 
  (global-auto-revert-mode 1)
 
